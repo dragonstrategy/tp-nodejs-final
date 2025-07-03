@@ -9,7 +9,7 @@
     "ruotes" : [
         {
             "src": "/(.*)",
-            "dest": "/"
+            "dest": "/index.js"
         }
     ]
 
