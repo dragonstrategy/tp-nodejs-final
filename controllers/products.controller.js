@@ -1,21 +1,19 @@
 // controllers/products.controller.js
 import * as productService from '../services/products.service.js';
 
-/**
- * GET /api/products
- */
+// GET /api/products - Filtros opcionales
 export async function getAllProducts(req, res, next) {
   try {
-    const products = await productService.getAllProducts();
+    const { titulo, categoria, descripcion } = req.query;
+    const filters = { titulo, categoria, descripcion };
+    const products = await productService.getAllProducts(filters);
     res.json(products);
   } catch (err) {
     next(err);
   }
 }
 
-/**
- * GET /api/products/:id
- */
+//GET /api/products/:id
 export async function getProductById(req, res, next) {
   try {
     const { id } = req.params;
@@ -29,9 +27,7 @@ export async function getProductById(req, res, next) {
   }
 }
 
-/**
- * POST /api/products/create
- */
+//POST /api/products/create
 export async function createProduct(req, res, next) {
   try {
     const data = req.body;
@@ -42,20 +38,16 @@ export async function createProduct(req, res, next) {
   }
 }
 
-/**
- * DELETE /api/products/:id
- */
+//DELETE /api/products/:id
 export async function deleteProduct(req, res, next) {
   try {
     const { id } = req.params;
     const deleted = await productService.deleteProduct(id);
 
     if (!deleted) {
-      // Si no existía, devolvemos 404
       return res.status(404).json({ error: 'Producto no encontrado' });
     }
 
-    // Solo si se borró realmente:
     res.json({ message: 'Producto eliminado' });
   } catch (err) {
     next(err);

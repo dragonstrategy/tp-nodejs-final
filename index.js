@@ -6,8 +6,8 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
+import authRoutes from './routes/auth.routes.js';
 import productsRoutes from './routes/products.routes.js';
-import authRoutes     from './routes/auth.routes.js';
 
 const app = express();
 
@@ -15,16 +15,19 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Montar capa de rutas
-app.use(authRoutes);
-app.use(productsRoutes);
+// Rutas publicas
+// Login
+app.use('/auth/login', authRoutes);
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.json({ message: 'API de Tienda Funcionando 👍' });
-});
+// Prueba de funcionamiento de api
+app.get('/', (req, res) =>
+  res.json({ message: 'API TP-Final-JR Funcionando 👍' })
+);
 
-// Middleware para rutas no definidas (404)
+// el Router decide que ruta es publica y cual es privada
+app.use('/api/products', productsRoutes);
+
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     error: 'Ruta no encontrada',
@@ -32,14 +35,13 @@ app.use((req, res) => {
   });
 });
 
-// (Opcional) Error handler para devolver siempre JSON
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ error: err.message });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log('Proyecto final de JR iniciado');
-  console.log(`Servidor iniciado en puerto ${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`Servidor iniciado en puerto ${PORT}`)
+);

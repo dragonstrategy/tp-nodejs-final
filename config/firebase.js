@@ -14,9 +14,9 @@ const firebaseConfig = {
   appId:            process.env.FIREBASE_APP_ID
 };
 
-// ---- Añade este console.log ----
+// prueba de credenciales
 console.log('Firebase Config:', firebaseConfig);
-// --------------------------------
+
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);

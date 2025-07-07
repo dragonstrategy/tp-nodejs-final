@@ -9,23 +9,54 @@ import {
 } from 'firebase/firestore';
 import { db } from '../config/firebase.js';
 
-// Referencia a la colección 'productos'
 const productosCol = collection(db, 'productos');
 
-/**
- * Devuelve todos los productos.
- * @returns {Promise<Array<{id:string, titulo:string, precio:number, categoria:string, descripcion:string}>>}
- */
-export async function obtenerTodos() {
+//Devuelve todos los productos - aplicando filtros opcionales
+export async function obtenerTodos({
+  titulo,
+  categoria,
+  descripcion
+} = {}) {
+  //  Consulta a Firestore, traemos todos los documentos de la coleccion
   const snapshot = await getDocs(productosCol);
-  return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  //  Mapeamos a JS
+  let productos = snapshot.docs.map(d => ({
+    id: d.id,
+    ...d.data()
+  }));
+
+  //  si se filtra por titulo, pasamos a minuscula y buscamos la palabra de forma parcial o total 
+  if (titulo) {
+    const busq = titulo.toLowerCase();
+    productos = productos.filter(p =>
+      p.titulo.toLowerCase().includes(busq)
+    );
+  }
+
+  // si se filtra por descripcion, pasamos a minuscula y buscamos la palabra de forma parcial o total 
+  if (descripcion) {
+    const busq = descripcion.toLowerCase();
+    productos = productos.filter(p =>
+      p.descripcion.toLowerCase().includes(busq)
+    );
+  }
+
+  // si se filtra por categoria, pasamos a minuscula y buscamos la palabra de forma parcial o total 
+  if (categoria) {
+    const busq = categoria.toLowerCase();
+    productos = productos.filter(p =>
+      p.categoria.toLowerCase().includes(busq)
+    );
+  }
+
+  // Devolvemos el array resultante (podria llegar a quedar vacío)
+  return productos;
 }
 
-/**
- * Devuelve un producto por su ID.
- * @param {string} id
- * @returns {Promise<Object|null>}
- */
+
+
+// Devuelve un producto por su ID.
 export async function obtenerPorId(id) {
   const ref = doc(db, 'productos', id);
   const snap = await getDoc(ref);
@@ -33,34 +64,18 @@ export async function obtenerPorId(id) {
   return { id: snap.id, ...snap.data() };
 }
 
-/**
- * Crea un nuevo producto en Firestore.
- * @param {{titulo:string, precio:number, categoria:string, descripcion:string}} data
- * @returns {Promise<Object>}
- */
+// Crea un nuevo producto en nuestra base de firestore
 export async function crear(data) {
   const docRef = await addDoc(productosCol, data);
   const snap = await getDoc(docRef);
   return { id: docRef.id, ...snap.data() };
 }
 
-/**
- * Elimina un producto por ID.
- * @param {string} id
- * @returns {Promise<boolean>} true si existía y se borró
- */
+// Elimina un producto por ID.
 export async function eliminar(id) {
   const ref = doc(db, 'productos', id);
-
-  // 1) Comprueba si existe
   const snap = await getDoc(ref);
-  console.log('DEBUG eliminar, existe?', snap.exists(), 'para ID:', id);
-
-  if (!snap.exists()) {
-    return false;
-  }
-
-  // 2) Si existe, bórralo
+  if (!snap.exists()) return false;
   await deleteDoc(ref);
   return true;
 }
