@@ -19,6 +19,12 @@ export async function createProduct(data) {
   return await productoModel.crear(data);
 }
 
+// Modifica un producto con los datos proporcionados
+export async function updateProduct(id, data) {
+   // Llama al modelo para modificar el producto
+  return await productoModel.actualizar(id, data);
+}
+
 // Elimina un producto por su ID.
 export async function deleteProduct(id) {
   // Llama al modelo para borrar el producto y retorna el resultado

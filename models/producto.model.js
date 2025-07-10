@@ -5,6 +5,7 @@ import {
   getDoc,
   doc,
   addDoc,
+  updateDoc,
   deleteDoc
 } from 'firebase/firestore';
 import { db } from '../config/firebase.js';
@@ -69,6 +70,21 @@ export async function crear(data) {
   const docRef = await addDoc(productosCol, data);
   const snap = await getDoc(docRef);
   return { id: docRef.id, ...snap.data() };
+}
+
+// Actualiza un producto por ID
+// Devuelve el producto actualizado o null si no existe
+export async function actualizar(id, data) {
+  const ref = doc(db, 'productos', id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) {
+    return null;
+  }
+  // updateDoc sólo modifica los campos
+  await updateDoc(ref, data);
+  // Recupera el documento actualizado
+  const updatedSnap = await getDoc(ref);
+  return { id: updatedSnap.id, ...updatedSnap.data() };
 }
 
 // Elimina un producto por ID.

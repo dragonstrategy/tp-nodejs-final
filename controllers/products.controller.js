@@ -38,6 +38,22 @@ export async function createProduct(req, res, next) {
   }
 }
 
+//PUT /api/products/:id
+export async function updateProduct(req, res, next) {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+    // Llama al servicio que hará la actualización
+    const updated = await productService.updateProduct(id, data);
+    if (!updated) {
+      return res.status(404).json({ error: 'Producto no encontrado' });
+    }
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
 //DELETE /api/products/:id
 export async function deleteProduct(req, res, next) {
   try {

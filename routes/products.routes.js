@@ -18,6 +18,13 @@ router.post(
   productsController.createProduct
 );
 
+// PUT /api/products/:id / (protegido)
+router.put(
+  '/:id',
+  authenticateJWT,
+  productsController.updateProduct
+);
+
 // DELETE /api/products/:id (protegido)
 router.delete(
   '/:id',
