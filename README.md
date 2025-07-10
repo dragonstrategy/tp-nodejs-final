@@ -1,4 +1,4 @@
- .Entrega Final alumno Jorge Ruiz:<br><br>
+ .<strong>Entrega Final alumno Jorge Ruiz:</strong><br><br>
 _<strong>Se agregó el dia 10-7-2025 la acción PUT, me di cuenta en la case de repaso del ultimo martes que no la había hecho </strong><br>
 _El tp cumple con todas las consignas<br>
 _Se puede Filtrar por título, categoría, y descripción<br>
